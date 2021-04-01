@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
 import android.os.Message;
-import android.text.style.IconMarginSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.personalcenter.MainActivity;
 import com.example.personalcenter.R;
 import com.example.personalcenter.personal.ChangePasswordActivity;
 import com.example.personalcenter.personal.FeedBackActivity;
@@ -129,7 +127,6 @@ public class PersonalFragment extends Fragment {
         });
 
 
-
         return root;
     }
 
@@ -142,12 +139,25 @@ public class PersonalFragment extends Fragment {
             @Override
             public void run() {
                 try {
+                    //存储password
+                    SharedPreferences.Editor editor = getActivity().getSharedPreferences("data",0).edit();
+                    editor.putString("password","123");
 
-                    String t_json = KenUtils.logIn("http://124.93.196.45:10002/login");
+                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences("data",0);
+
+                    JSONObject userObject = new JSONObject();
+                    userObject.put("username","KenChen");
+                    userObject.put("password",sharedPreferences.getString("password","123"));
+                    String json = userObject.toString();
+
+                    String t_json = KenUtils.logIn("http://124.93.196.45:10002/login",json);
+                    Log.i("Ken", "run: "+t_json);
                     JSONObject jsonObject = new JSONObject(t_json);
                     int code = jsonObject.getInt("code");
                     if (code==200){
                         String token = jsonObject.getString("token");           //登陆成功后返回Token
+                        editor.putString("token",token);
+                        editor.apply();
 
                         String user_info_json = KenUtils.senGet_T("http://124.93.196.45:10002/getInfo",token);
                         JSONObject jsonObject1 = new JSONObject(user_info_json);
@@ -161,11 +171,6 @@ public class PersonalFragment extends Fragment {
                         String email = object.getString("email");
                         Log.i("Ken", "run: "+avatar);
                         personal = new Personal(userName,nickName,phonenumber,sex,avatar,idCard,email);
-
-                        //存储token
-                        SharedPreferences.Editor editor = getActivity().getSharedPreferences("data",0).edit();
-                        editor.putString("token",token);
-                        editor.apply();
 
                         handler.sendEmptyMessage(1);
                     }else if (code == 500){

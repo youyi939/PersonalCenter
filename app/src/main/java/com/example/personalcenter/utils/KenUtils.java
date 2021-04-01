@@ -32,11 +32,11 @@ public class KenUtils {
      * @return
      * @throws IOException
      */
-    public static String logIn(String url)throws IOException{
+    public static String logIn(String url, String user)throws IOException{
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         MediaType mediaType = MediaType.parse("application/json");
-        RequestBody body = RequestBody.create(mediaType, "{\n    \"username\": \"KenChen\", \"password\": \"123\"\n}\n");
+        RequestBody body = RequestBody.create(mediaType, user);
         Request request = new Request.Builder()
                 .url(url)
                 .method("POST", body)

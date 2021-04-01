@@ -95,8 +95,9 @@ public class PersonalInfoActivity extends AppCompatActivity {
                                 Log.i("Ken", "run: " + json);
 
 
+
                                 //重新获取token
-                                String t_json = KenUtils.logIn("http://124.93.196.45:10002/login");
+                                String t_json = KenUtils.logIn("http://124.93.196.45:10002/login",editor.getString("password","123"));
                                 JSONObject jsonObject = new JSONObject(t_json);
                                 int code = jsonObject.getInt("code");
                                 if (code == 200) {
@@ -116,7 +117,6 @@ public class PersonalInfoActivity extends AppCompatActivity {
                                         }
                                     });
                                 }
-
 
                             } catch (IOException | JSONException e) {
                                 e.printStackTrace();
