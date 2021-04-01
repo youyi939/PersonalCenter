@@ -24,6 +24,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.personalcenter.R;
+import com.example.personalcenter.personal.ChangePasswordActivity;
+import com.example.personalcenter.personal.FeedBackActivity;
+import com.example.personalcenter.personal.OrderListActivity;
 import com.example.personalcenter.personal.PersonalInfoActivity;
 import com.example.personalcenter.pojo.Personal;
 import com.example.personalcenter.utils.KenUtils;
@@ -47,6 +50,7 @@ public class PersonalFragment extends Fragment {
     private TextView txt_orderList;                 //订单列表
     private TextView txt_changePassword;            //修改密码
     private TextView txt_feedback;                  //意见反馈
+    private Button logout;
 
     public static PersonalFragment newInstance() {
         return new PersonalFragment();
@@ -62,7 +66,10 @@ public class PersonalFragment extends Fragment {
         txt_nickName = root.findViewById(R.id.txt_nickName);
         txt_orderList = root.findViewById(R.id.txt_orderList);
         txt_changePassword = root.findViewById(R.id.txt_changePassword);
+        txt_feedback = root.findViewById(R.id.txt_feedback);
+        logout = root.findViewById(R.id.logout);
 
+        //个人信息点击跳转
         personal_info_txt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -70,6 +77,52 @@ public class PersonalFragment extends Fragment {
                 getActivity().startActivity(intent);
             }
         });
+
+        //订单列表点击跳转
+        txt_orderList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), OrderListActivity.class);
+                getActivity().startActivity(intent);
+            }
+        });
+
+        //修改密码点击跳转
+        txt_changePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
+                getActivity().startActivity(intent);
+            }
+        });
+
+        //意见反馈点击跳转
+        txt_feedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), FeedBackActivity.class);
+                getActivity().startActivity(intent);
+            }
+        });
+
+
+        //退出登陆点击事件
+        // TODO: 4/1/21 删除存储的token，设置哪些跳转按钮禁止点击
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(),"退出登陆成功",Toast.LENGTH_SHORT).show();
+                txt_nickName.setText("未登录");
+                avatar_img.setImageResource(R.drawable.ic_launcher_background);
+                txt_changePassword.setClickable(false);
+                txt_feedback.setClickable(false);
+                txt_orderList.setClickable(false);
+                personal_info_txt.setClickable(false);
+
+            }
+        });
+
+
 
         return root;
     }
@@ -148,6 +201,10 @@ public class PersonalFragment extends Fragment {
                     Toast.makeText(getContext(),"登陆成功",Toast.LENGTH_SHORT).show();
                     Glide.with(getContext()).load(personal.getAvatar()).into(avatar_img);
                     txt_nickName.setText(personal.getNickName());
+                    txt_changePassword.setClickable(true);
+                    txt_feedback.setClickable(true);
+                    txt_orderList.setClickable(true);
+                    personal_info_txt.setClickable(true);
                     break;
                 case 2:
                     Toast.makeText(getContext(),msg.obj.toString(),Toast.LENGTH_SHORT).show();
