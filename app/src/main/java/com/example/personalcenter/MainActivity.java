@@ -1,5 +1,6 @@
 package com.example.personalcenter;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -58,7 +59,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        //loginActivity登陆页面，点击登陆后，识别它的值，true则跳转到个人中心fragment
+        Intent intent = getIntent();
+        if (intent.getBooleanExtra("login",false)){
+            replaceFragment(personalFragment);
+        }
 
     }
 

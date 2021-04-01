@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.personalcenter.LogInActivity;
 import com.example.personalcenter.R;
 import com.example.personalcenter.personal.ChangePasswordActivity;
 import com.example.personalcenter.personal.FeedBackActivity;
@@ -123,6 +124,9 @@ public class PersonalFragment extends Fragment {
                 //删除数据
                 boolean clear = getActivity().getSharedPreferences("data",0).edit().clear().commit();
                 Toast.makeText(getContext(),"退出登陆成功"+clear,Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(getActivity(), LogInActivity.class);
+                getActivity().startActivity(intent);
             }
         });
 
