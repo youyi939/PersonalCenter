@@ -109,4 +109,27 @@ public class KenUtils {
         return response.body().string();
     }
 
+
+    /**
+     * 新增意见反馈 POST请求，需携带Token及具体JSON数据
+     * @param token
+     * @param msg
+     * @return
+     * @throws IOException
+     */
+    public static String postFeedBack(String token,String msg) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(mediaType,msg);
+        Request request = new Request.Builder()
+                .url("http://124.93.196.45:10002/userinfo/feedback")
+                .method("POST", body)
+                .addHeader("Authorization",token)
+                .addHeader("Content-Type", "application/json")
+                .build();
+        Response response = client.newCall(request).execute();
+        return response.body().string();
+    }
+
 }
