@@ -95,18 +95,27 @@ public class PersonalInfoActivity extends AppCompatActivity {
                                 Log.i("Ken", "run: " + json);
 
 
-
+                                // TODO: 4/1/21 修改登陆
                                 //重新获取token
-                                String t_json = KenUtils.logIn("http://124.93.196.45:10002/login",editor.getString("password","123"));
+                                JSONObject userObject = new JSONObject();
+                                userObject.put("username","KenChen");
+                                userObject.put("password",editor.getString("password","123"));
+                                String t_json = KenUtils.logIn("http://124.93.196.45:10002/login",userObject.toString());
                                 JSONObject jsonObject = new JSONObject(t_json);
                                 int code = jsonObject.getInt("code");
                                 if (code == 200) {
                                     String token_new = jsonObject.getString("token");           //登陆成功后返回Token
-
                                     //存储token
                                     SharedPreferences.Editor editor1 = getSharedPreferences("data", 0).edit();
                                     editor1.putString("token", token_new);
                                     editor1.apply();
+
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(PersonalInfoActivity.this, "获取新Token成功", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
 
                                 } else if (code == 500) {
                                     String msg = jsonObject.getString("msg");
