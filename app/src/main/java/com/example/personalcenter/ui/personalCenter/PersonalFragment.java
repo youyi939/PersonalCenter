@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.personalcenter.MainActivity;
 import com.example.personalcenter.R;
 import com.example.personalcenter.personal.ChangePasswordActivity;
 import com.example.personalcenter.personal.FeedBackActivity;
@@ -35,6 +36,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 
 
 // TODO: 4/1/21 退出登陆按钮，删除token，各种按钮不允许点击，头像换成默认图片，昵称位置显示未登录
@@ -111,7 +114,7 @@ public class PersonalFragment extends Fragment {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(),"退出登陆成功",Toast.LENGTH_SHORT).show();
+
                 txt_nickName.setText("未登录");
                 avatar_img.setImageResource(R.drawable.ic_launcher_background);
                 txt_changePassword.setClickable(false);
@@ -119,6 +122,9 @@ public class PersonalFragment extends Fragment {
                 txt_orderList.setClickable(false);
                 personal_info_txt.setClickable(false);
 
+                //删除数据
+                boolean clear = getActivity().getSharedPreferences("data",0).edit().clear().commit();
+                Toast.makeText(getContext(),"退出登陆成功"+clear,Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -137,8 +143,7 @@ public class PersonalFragment extends Fragment {
             public void run() {
                 try {
 
-                    // TODO: 3/31/21 应该加入token登陆失败的情况判断
-                    String t_json = KenUtils.sendPost("http://124.93.196.45:10002/login");
+                    String t_json = KenUtils.logIn("http://124.93.196.45:10002/login");
                     JSONObject jsonObject = new JSONObject(t_json);
                     int code = jsonObject.getInt("code");
                     if (code==200){
@@ -150,11 +155,12 @@ public class PersonalFragment extends Fragment {
                         String userName = object.getString("userName");
                         String nickName = object.getString("nickName");
                         String phonenumber = object.getString("phonenumber");
+                        String idCard = object.getString("idCard");
                         int sex = object.getInt("sex");
                         String avatar = "http://124.93.196.45:10002"+object.getString("avatar");
-
+                        String email = object.getString("email");
                         Log.i("Ken", "run: "+avatar);
-                        personal = new Personal(userName,nickName,phonenumber,sex,avatar);
+                        personal = new Personal(userName,nickName,phonenumber,sex,avatar,idCard,email);
 
                         //存储token
                         SharedPreferences.Editor editor = getActivity().getSharedPreferences("data",0).edit();
@@ -171,7 +177,26 @@ public class PersonalFragment extends Fragment {
                     }
 
 
-                } catch (IOException | JSONException e) {
+                } catch (SocketTimeoutException e1){
+                    e1.printStackTrace();
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getContext(),"登陆超时，请检查网络设置",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                }catch (SocketException e2){
+                    e2.printStackTrace();
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getContext(),"没有网络",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                }
+                catch (IOException | JSONException e) {
                     e.printStackTrace();
                 }
             }

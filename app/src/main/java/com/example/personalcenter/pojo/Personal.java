@@ -1,22 +1,41 @@
 package com.example.personalcenter.pojo;
 
 public class Personal {
-    public Personal() {
-    }
-
-    public Personal(String userName, String nickName, String phonenumber, int sex, String avatar) {
-        this.userName = userName;
-        this.nickName = nickName;
-        this.phonenumber = phonenumber;
-        this.sex = sex;
-        this.avatar = avatar;
-    }
 
     private String userName;
     private String nickName;
     private String phonenumber;
     private int sex;
     private String avatar;
+    private String idCard;
+    private String email;
+
+
+    public Personal(String userName, String nickName, String phonenumber, int sex, String avatar, String idCard, String email) {
+        this.userName = userName;
+        this.nickName = nickName;
+        this.phonenumber = phonenumber;
+        this.sex = sex;
+        this.avatar = avatar;
+        this.idCard = idCard;
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getIdCard() {
+        return idCard;
+    }
+
+    public void setIdCard(String idCard) {
+        this.idCard = idCard;
+    }
 
     public String getUserName() {
         return userName;

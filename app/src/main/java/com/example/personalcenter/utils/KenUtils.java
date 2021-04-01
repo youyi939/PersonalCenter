@@ -32,7 +32,7 @@ public class KenUtils {
      * @return
      * @throws IOException
      */
-    public static String sendPost(String url)throws IOException{
+    public static String logIn(String url)throws IOException{
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         MediaType mediaType = MediaType.parse("application/json");
@@ -67,6 +67,24 @@ public class KenUtils {
     }
 
 
+    /**
+     * 修改用户个人信息,需要Token
+     * @param url
+     * @return
+     */
+    public static String ChangeUser(String url,String token) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = RequestBody.create(mediaType, "");
+        Request request = new Request.Builder()
+                .url(url)
+                .method("POST", body)
+                .addHeader("Authorization",token)
+                .build();
+        Response response = client.newCall(request).execute();
+        return response.body().string();
+    }
 
 
 }
