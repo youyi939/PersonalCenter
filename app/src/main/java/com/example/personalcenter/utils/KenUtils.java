@@ -13,7 +13,7 @@ public class KenUtils {
 
     /**
      * 获取网络资源
-     *
+     * 不需要Token
      * @param url
      * @return
      * @throws IOException
@@ -45,6 +45,27 @@ public class KenUtils {
         Response response = client.newCall(request).execute();
         return response.body().string();
     }
+
+
+    /**
+     * 发Get请求，需携带token
+     * @param url
+     * @param token
+     * @return
+     * @throws IOException
+     */
+    public static String senGet_T(String url,String token) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        Request request = new Request.Builder()
+                .url(url)
+                .method("GET", null)
+                .addHeader("Authorization",token)
+                .build();
+        Response response = client.newCall(request).execute();
+        return response.body().string();
+    }
+
 
 
 
