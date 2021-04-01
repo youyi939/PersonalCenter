@@ -177,7 +177,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
     }
 
     /**
-     * 1:
+     * 1:请求个人详情完毕，渲染页面
      * 2:
      * 3:
      */

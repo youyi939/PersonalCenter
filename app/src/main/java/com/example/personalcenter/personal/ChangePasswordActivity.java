@@ -30,7 +30,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     private EditText old_Password;
     private EditText new_Password;
     private Button changePassword;
-    private SharedPreferences sharedPreferences ;
+    private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
     @Override
@@ -42,36 +42,36 @@ public class ChangePasswordActivity extends AppCompatActivity {
         old_Password = findViewById(R.id.old_Password);
         new_Password = findViewById(R.id.newPassword);
         changePassword = findViewById(R.id.changePassword);
-        sharedPreferences = getSharedPreferences("data",0);
-        editor = getSharedPreferences("data",0).edit();
+        sharedPreferences = getSharedPreferences("data", 0);
+        editor = getSharedPreferences("data", 0).edit();
 
 
         changePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TextUtils.isEmpty(old_Password.getText()) || TextUtils.isEmpty(new_Password.getText())){
-                    Toast.makeText(ChangePasswordActivity.this,"输入不得为空",Toast.LENGTH_SHORT).show();
-                }else if (!old_Password.getText().toString().equals(sharedPreferences.getString("password", "123"))){
-                    Toast.makeText(ChangePasswordActivity.this,"原密码错误，请重新输入",Toast.LENGTH_SHORT).show();
-                }else {
+                if (TextUtils.isEmpty(old_Password.getText()) || TextUtils.isEmpty(new_Password.getText())) {
+                    Toast.makeText(ChangePasswordActivity.this, "输入不得为空", Toast.LENGTH_SHORT).show();
+                } else if (!old_Password.getText().toString().equals(sharedPreferences.getString("password", "123"))) {
+                    Toast.makeText(ChangePasswordActivity.this, "原密码错误，请重新输入", Toast.LENGTH_SHORT).show();
+                } else {
                     //发请求，修改密码
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
                             try {
-                                String token = sharedPreferences.getString("token","");
+                                String token = sharedPreferences.getString("token", "");
                                 JSONObject json_password = new JSONObject();
-                                json_password.put("userId",32213);
-                                json_password.put("oldPwd",Integer.parseInt(old_Password.getText().toString()));
-                                json_password.put("password",Integer.parseInt(new_Password.getText().toString()));
+                                json_password.put("userId", 32213);
+                                json_password.put("oldPwd", Integer.parseInt(old_Password.getText().toString()));
+                                json_password.put("password", Integer.parseInt(new_Password.getText().toString()));
 
-                                String json = KenUtils.changePassword(token,json_password.toString());
+                                String json = KenUtils.changePassword(token, json_password.toString());
                                 JSONObject jsonObject = new JSONObject(json);
                                 int code = jsonObject.getInt("code");
-                                if (code == 200){
-                                    editor.putString("password",new_Password.getText().toString());
+                                if (code == 200) {
+                                    editor.putString("password", new_Password.getText().toString());
                                     handler.sendEmptyMessage(1);
-                                }else {
+                                } else {
                                     handler.sendEmptyMessage(2);
                                 }
 
@@ -89,22 +89,25 @@ public class ChangePasswordActivity extends AppCompatActivity {
     }
 
 
-    private Handler handler = new Handler(){
+    /**
+     * 1:修改成功
+     * 2:修改失败
+     */
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
-            switch (msg.what){
+            switch (msg.what) {
                 case 1:
-                    Toast.makeText(ChangePasswordActivity.this,"密码修改成功",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChangePasswordActivity.this, "密码修改成功", Toast.LENGTH_SHORT).show();
                     break;
                 case 2:
-                    Toast.makeText(ChangePasswordActivity.this,"密码修改失败",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChangePasswordActivity.this, "密码修改失败", Toast.LENGTH_SHORT).show();
                     break;
                 default:
                     break;
             }
         }
     };
-
 
 
 }
