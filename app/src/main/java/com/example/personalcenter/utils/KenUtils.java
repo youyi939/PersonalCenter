@@ -87,4 +87,26 @@ public class KenUtils {
     }
 
 
+    /**
+     * 修改密码 PUT请求，需携带Token和相应的JSON数据
+     * @param token
+     * @param message
+     * @return
+     * @throws IOException
+     */
+    public static String changePassword(String token,String message) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(mediaType, message);
+        Request request = new Request.Builder()
+                .url("http://124.93.196.45:10002/system/user/resetPwd")
+                .method("PUT", body)
+                .addHeader("Authorization", token)
+                .addHeader("Content-Type", "application/json")
+                .build();
+        Response response = client.newCall(request).execute();
+        return response.body().string();
+    }
+
 }
