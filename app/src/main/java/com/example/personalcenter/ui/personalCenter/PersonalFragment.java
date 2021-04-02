@@ -38,15 +38,12 @@ import java.io.IOException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
-
-// TODO: 4/1/21 退出登陆按钮，删除token，各种按钮不允许点击，头像换成默认图片，昵称位置显示未登录
 public class PersonalFragment extends Fragment {
 
     private PersonalViewModel mViewModel;
     private ImageView avatar_img;
     private Personal personal;
     private TextView txt_nickName;
-
 
     private TextView personal_info_txt;             //个人中心
     private TextView txt_orderList;                 //订单列表
@@ -138,20 +135,35 @@ public class PersonalFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.i("Ken", "onStart: ");
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     //存储password
                     SharedPreferences.Editor editor = getActivity().getSharedPreferences("data",0).edit();
-                    editor.putString("password","123");
-
                     SharedPreferences sharedPreferences = getActivity().getSharedPreferences("data",0);
 
+                    if (sharedPreferences.getString("username", "k").equals("k") || sharedPreferences.getString("password","0").equals("0")){
+                        Log.i("Ken", "run: 此时未登录");
+                        Intent intent = new Intent(getActivity(),LogInActivity.class);
+                        getActivity().startActivity(intent);
+                    }
+
+                    String username = sharedPreferences.getString("username","k");
+                    String password = sharedPreferences.getString("password","0");
+
+                    Log.i("Ken", "run: "+username+password);
+
                     JSONObject userObject = new JSONObject();
-                    userObject.put("username","KenChen");
-                    userObject.put("password",sharedPreferences.getString("password","123"));
+                    userObject.put("username",username);
+                    userObject.put("password",password);
                     String json = userObject.toString();
 
                     String t_json = KenUtils.logIn("http://124.93.196.45:10002/login",json);
@@ -162,6 +174,7 @@ public class PersonalFragment extends Fragment {
                         String token = jsonObject.getString("token");           //登陆成功后返回Token
                         editor.putString("token",token);
                         editor.apply();
+                        editor.commit();
 
                         String user_info_json = KenUtils.senGet_T("http://124.93.196.45:10002/getInfo",token);
                         JSONObject jsonObject1 = new JSONObject(user_info_json);
@@ -210,8 +223,6 @@ public class PersonalFragment extends Fragment {
                 }
             }
         }).start();
-
-
     }
 
     @Override
